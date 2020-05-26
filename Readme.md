@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Фома Багиян](https://up.htmlacademy.ru/javascript/20/user/1148461).
-* Наставник: `Неизвестно`.
+* Наставник: [Евгений Алипкин](https://up.htmlacademy.ru/javascript/20/user/38158).
 
 ---
 
