@@ -96,23 +96,32 @@ var bigPictureCommentCounter = bigPictureSection.querySelector('.social__comment
 var bodyElement = document.querySelector('body');
 
 bodyElement.classList.add('modal-open');
-bigPictureImg.querySelector('img').src = photos[0].url;
-bigPictureLikesNumber.textContent = photos[0].likes;
-bigPictureCommentsNumber.textContent = photos[0].comments.length;
-bigPictureCaption.textContent = photos[0].description;
+
+var createBigPhotoElement = function (photo) {
+  bigPictureImg.querySelector('img').src = photo.url;
+  bigPictureLikesNumber.textContent = photo.likes;
+  bigPictureCommentsNumber.textContent = photo.comments.length;
+  bigPictureCaption.textContent = photo.description;
+};
+
 bigPictureCommentCounter.classList.add('hidden');
 bigPictureMoreLoader.classList.add('hidden');
 
 var commentsFragment = document.createDocumentFragment();
 
-for (var j = 0; j < photos[0].comments.length; j++) {
-  var commentElement = bigPictureComments.querySelector('.social__comment');
-  var newCommentElement = commentElement.cloneNode(true);
-  newCommentElement.querySelector('img').src = photos[0].comments[j].avatar;
-  newCommentElement.querySelector('img').alt = photos[0].comments[j].authorNames;
-  newCommentElement.querySelector('.social__text').textContent = photos[0].comments[j].message;
-  commentsFragment.appendChild(newCommentElement);
-}
+var createCommentsElement = function (photo) {
+  for (var j = 0; j < photo.comments.length; j++) {
+    var commentElement = bigPictureComments.querySelector('.social__comment');
+    var newCommentElement = commentElement.cloneNode(true);
+    newCommentElement.querySelector('img').src = photo.comments[j].avatar;
+    newCommentElement.querySelector('img').alt = photo.comments[j].authorNames;
+    newCommentElement.querySelector('.social__text').textContent = photo.comments[j].message;
+    commentsFragment.appendChild(newCommentElement);
+  }
+};
+
+createBigPhotoElement(photos[0]);
+createCommentsElement(photos[0]);
 
 bigPictureComments.innerHTML = '';
 bigPictureComments.appendChild(commentsFragment);
