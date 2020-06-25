@@ -138,11 +138,17 @@ bigPictureSection.classList.add('hidden');
 var uploadInput = document.querySelector('#upload-file');
 var photoEditForm = document.querySelector('.img-upload__overlay');
 var editFormCloseButton = document.querySelector('.img-upload__cancel');
+var commentsInput = photoEditForm.querySelector('.text__description');
 
 var editFormOnEsc = function (evt) {
   if (evt.key === 'Escape') {
     closePhotoEditForm();
-    document.removeEventListener('keydown', editFormOnEsc);
+  }
+};
+
+var stayOpenWhenFocus = function (evt) {
+  if (evt.key === 'Escape') {
+    evt.stopPropagation();
   }
 };
 
@@ -150,12 +156,17 @@ var openPhotoEditForm = function () {
   bodyElement.classList.add('modal-open');
   photoEditForm.classList.remove('hidden');
   document.addEventListener('keydown', editFormOnEsc);
+  hashtagInput.addEventListener('keydown', stayOpenWhenFocus);
+  commentsInput.addEventListener('keydown', stayOpenWhenFocus);
 };
 
 var closePhotoEditForm = function () {
   photoEditForm.classList.add('hidden');
   bodyElement.classList.remove('modal-open');
   uploadInput.value = '';
+  document.removeEventListener('keydown', editFormOnEsc);
+  hashtagInput.removeEventListener('keydown', stayOpenWhenFocus);
+  commentsInput.removeEventListener('keydown', stayOpenWhenFocus);
 };
 
 uploadInput.addEventListener('change', function () {
