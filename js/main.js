@@ -6,6 +6,11 @@ var AVATAR_MIN = 1;
 var AVATAR_MAX = 6;
 var COMMENTS_MAX = 10;
 var PHOTOS_NUMBER = 25;
+var DEFAULT_SCALE = 100;
+var MAX_SCALE = 100;
+var MIN_SCALE = 25;
+var SCALE_STEP = 25;
+var DEFAULT_LEVEL = '100%';
 
 var DESCRIPTION = 'It is a sample photo description';
 
@@ -125,3 +130,170 @@ createCommentsElement(photos[0]);
 
 bigPictureComments.innerHTML = '';
 bigPictureComments.appendChild(commentsFragment);
+
+bigPictureSection.classList.add('hidden');
+
+// Photo uploading
+
+var uploadInput = document.querySelector('#upload-file');
+var photoEditForm = document.querySelector('.img-upload__overlay');
+var editFormCloseButton = document.querySelector('.img-upload__cancel');
+
+var editFormOnEsc = function (evt) {
+  if (evt.key === 'Escape') {
+    closePhotoEditForm();
+    document.removeEventListener('keydown', editFormOnEsc);
+  }
+};
+
+var openPhotoEditForm = function () {
+  bodyElement.classList.add('modal-open');
+  photoEditForm.classList.remove('hidden');
+  document.addEventListener('keydown', editFormOnEsc);
+};
+
+var closePhotoEditForm = function () {
+  photoEditForm.classList.add('hidden');
+  bodyElement.classList.remove('modal-open');
+  uploadInput.value = '';
+};
+
+uploadInput.addEventListener('change', function () {
+  openPhotoEditForm();
+});
+
+editFormCloseButton.addEventListener('click', function () {
+  closePhotoEditForm();
+});
+
+// Changing of photo scale
+
+var scaleMore = document.querySelector('.scale__control--bigger');
+var scaleLess = document.querySelector('.scale__control--smaller');
+var scaleNumber = document.querySelector('.scale__control--value');
+var photoPreview = document.querySelector('.img-upload__preview');
+
+var scale = DEFAULT_SCALE;
+scaleNumber.value = scale + '%';
+
+scaleMore.addEventListener('click', function () {
+  if (scale < MAX_SCALE) {
+    scale += SCALE_STEP;
+    scaleNumber.value = scale + '%';
+    photoPreview.style.transform = 'scale(' + scale / 100 + ')';
+  } else {
+    scaleNumber.value = MAX_SCALE + '%';
+  }
+});
+
+scaleLess.addEventListener('click', function () {
+  if (scale > MIN_SCALE) {
+    scale -= SCALE_STEP;
+    scaleNumber.value = scale + '%';
+    photoPreview.style.transform = 'scale(' + scale / 100 + ')';
+  } else {
+    scaleNumber.value = MIN_SCALE + '%';
+  }
+});
+
+// Changing of photo effect
+
+var effectsSet = photoEditForm.querySelector('.effects');
+var effects = photoEditForm.querySelectorAll('.effects__radio');
+
+var effectLevel = photoEditForm.querySelector('.effect-level');
+var effectLevelPin = photoEditForm.querySelector('.effect-level__pin');
+var effectValue = photoEditForm.querySelector('.effect-level__value');
+
+var checkEffect = function () {
+  switch (true) {
+    case photoPreview.classList.contains('effects__preview--none'):
+      photoPreview.style.filter = null;
+      effectLevel.classList.add('hidden');
+      break;
+    case photoPreview.classList.contains('effects__preview--chrome'):
+      photoPreview.style.filter = 'grayscale(' + effectValue.value / 100 + ')';
+      break;
+    case photoPreview.classList.contains('effects__preview--sepia'):
+      photoPreview.style.filter = 'sepia(' + effectValue.value / 100 + ')';
+      break;
+    case photoPreview.classList.contains('effects__preview--marvin'):
+      photoPreview.style.filter = 'invert(' + effectValue.value + '%)';
+      break;
+    case photoPreview.classList.contains('effects__preview--phobos'):
+      photoPreview.style.filter = 'blur(' + effectValue.value * 3 / 100 + 'px)';
+      break;
+    case photoPreview.classList.contains('effects__preview--heat'):
+      photoPreview.style.filter = 'brightness(' + effectValue.value * 4 / 100 + ')';
+      break;
+  }
+};
+
+effectLevelPin.style.left = DEFAULT_LEVEL;
+effectLevel.classList.add('hidden');
+
+effectsSet.addEventListener('change', function () {
+  for (var j = 0; j < effects.length; j++) {
+    if (effects[j].checked) {
+      effectLevel.classList.remove('hidden');
+      effectLevelPin.style.left = DEFAULT_LEVEL;
+      effectValue.value = effectLevelPin.style.left.slice(0, -1);
+      photoPreview.classList.add('effects__preview--' + effects[j].value);
+      checkEffect();
+    } else if (effects[j].checked === false) {
+      photoPreview.classList.remove('effects__preview--' + effects[j].value);
+    }
+  }
+});
+
+effectLevelPin.addEventListener('mouseup', function () {
+  checkEffect();
+});
+
+// Hashtag validation
+
+var hashtagInput = photoEditForm.querySelector('.text__hashtags');
+
+var showNotification = function (notificationText, whereToShow) {
+  whereToShow.setCustomValidity(notificationText);
+  whereToShow.reportValidity();
+};
+
+var hasDuplicates = function (array) {
+  var valuesSoFar = [];
+  for (var j = 0; j < array.length; ++j) {
+    var value = array[j].toLowerCase(); // hashtag should be case insensitive
+    if (valuesSoFar.indexOf(value) !== -1) {
+      return true;
+    }
+    valuesSoFar.push(value);
+  }
+  return false;
+};
+
+var hashtagValidation = function (hashtags, hashtag) {
+  var firstHashRegexp = /^#/;
+  var alphanumRegexp = /^#[a-zA-Za-zA-Z0-9]+$/;
+  if (hashtags.length > 5) {
+    showNotification('Максимальное количество хештегов - 5', hashtagInput);
+  } else if (hashtag[0] === '#' && hashtag.length === 1) {
+    showNotification('Хэштэг не может состоять только из cимвола "#"', hashtagInput);
+  } else if (hasDuplicates(hashtags)) {
+    showNotification('В поле присутствуют одинаковые хэштеги', hashtagInput);
+  } else if (firstHashRegexp.test(hashtag) === false) {
+    showNotification('Хештег должен начинаться с символа "#"', hashtagInput);
+  } else if (hashtag.length > 20) {
+    showNotification('Длина хештега не должна превышать 20 символов', hashtagInput);
+  } else if (alphanumRegexp.test(hashtag) === false) {
+    showNotification('Хештеги могут содержать только буквы и цифры', hashtagInput);
+  } else {
+    showNotification('', hashtagInput);
+  }
+};
+
+hashtagInput.addEventListener('input', function () {
+  var hashtagsArray = hashtagInput.value.split(' ');
+  for (var h = 0; h < hashtagsArray.length; h++) {
+    hashtagValidation(hashtagsArray, hashtagsArray[h]);
+  }
+});
