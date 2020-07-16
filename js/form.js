@@ -32,7 +32,7 @@
       type: 'invert',
       unit: '%',
       calculateValue: function (value) {
-        return value / 100;
+        return value;
       }
     },
     'phobos': {
@@ -96,7 +96,7 @@
 
     setImageEffect: function (effect) {
       var currentEffectSettings = effectsSettings[effect];
-      var filterString = '' + currentEffectSettings.type + '(' + currentEffectSettings.calculateValue(effectLevelValue.value) + ')' + currentEffectSettings.unit;
+      var filterString = '' + currentEffectSettings.type + '(' + currentEffectSettings.calculateValue(effectLevelValue.value) + currentEffectSettings.unit + ')';
       photoPreview.style.filter = filterString;
     }
   };
