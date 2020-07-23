@@ -10,11 +10,19 @@
       }
     },
 
-
     stayOpenOnEsc: function (evt) {
       if (evt.key === ESC_KEY) {
         evt.stopPropagation();
       }
+    },
+
+    getRandomInRange: function (min, max) {
+      var randomValue = Math.floor(Math.random() * (max - min) + min);
+      return randomValue;
+    },
+    getRandomFromArray: function (array) {
+      var randomValue = array[window.util.getRandomInRange(0, array.length)];
+      return randomValue;
     },
 
     showNotification: function (notificationText, whereToShow) {
