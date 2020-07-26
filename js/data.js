@@ -1,12 +1,11 @@
 'use strict';
 (function () {
-  var URL = 'https://javascript.pages.academy/kekstagram/data';
+  var TIMEOUT_IN_MS = 10000;
   var StatusCode = {
     OK: 200
   };
-  var TIMEOUT_IN_MS = 10000;
 
-  window.load = function (onSuccess, onError) {
+  window.handleNewRequest = function (method, url, onSuccess, onError, data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -26,7 +25,7 @@
 
     xhr.timeout = TIMEOUT_IN_MS;
 
-    xhr.open('GET', URL);
-    xhr.send();
+    xhr.open(method, url);
+    xhr.send(data);
   };
 })();

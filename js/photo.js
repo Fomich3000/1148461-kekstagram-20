@@ -2,14 +2,14 @@
 
 (function () {
 
-  window.picture.createPhotoElement = function (element, photo) {
-    var newElement = element.cloneNode(true);
-    var imgElement = newElement.querySelector('.picture__img');
-    var likesElement = newElement.querySelector('.picture__likes');
-    var commentsElement = newElement.querySelector('.picture__comments');
-    imgElement.src = photo.url;
-    likesElement.textContent = photo.likes;
-    commentsElement.textContent = photo.comments.length;
-    return newElement;
+  window.createPhoto = function (element, photo) {
+    var newPhoto = element.cloneNode(true);
+    var img = newPhoto.querySelector('.picture__img');
+    var likes = newPhoto.querySelector('.picture__likes');
+    var comments = newPhoto.querySelector('.picture__comments');
+    img.src = photo.url;
+    likes.textContent = photo.likes;
+    comments.textContent = photo.comments.length;
+    return newPhoto;
   };
 })();
