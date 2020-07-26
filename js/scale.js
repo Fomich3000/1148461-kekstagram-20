@@ -2,18 +2,24 @@
 
 (function () {
 
-  var scaleNumber = document.querySelector('.scale__control--value');
-  var scaleMore = document.querySelector('.scale__control--bigger');
-  var scaleLess = document.querySelector('.scale__control--smaller');
-
   var DEFAULT_SCALE = 100;
   var MAX_SCALE = 100;
   var MIN_SCALE = 25;
   var SCALE_STEP = 25;
 
+  var photoPreview = document.querySelector('.img-upload__preview img');
+  var scaleNumber = document.querySelector('.scale__control--value');
+  var scaleMore = document.querySelector('.scale__control--bigger');
+  var scaleLess = document.querySelector('.scale__control--smaller');
+
   var setScale = function (scaleValue) {
     scaleNumber.value = scaleValue + '%';
-    window.form.element.style.transform = 'scale(' + scaleValue / 100 + ')';
+    photoPreview.style.transform = 'scale(' + scaleValue / 100 + ')';
+  };
+
+  window.scale = {
+    setScale: setScale,
+    defaultScale: DEFAULT_SCALE
   };
 
   setScale(DEFAULT_SCALE);
