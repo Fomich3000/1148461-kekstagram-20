@@ -1,64 +1,22 @@
 'use strict';
 
-(function () {
+(function() {
   var URL = 'https://javascript.pages.academy/kekstagram/data';
+  var RANDOM_PHOTOS_TO_SHOW = 10;
 
-  var renderPhotoGallery = function (photos) {
-    for (var i = 0; i < photos.length; i++) {
-      var newPhoto = window.createPhoto(photoTemplate, photos[i]);
-      fragment.appendChild(newPhoto);
-      photosList.appendChild(fragment);
-      var photosElements = photosList.getElementsByClassName('picture');
-      var lastPhotoElement = photosElements.length;
-      console.log(photosElements[lastPhotoElement]);
-      /* window.bigPhotoHandler(photosElements[photosElements.length], newPhoto); */
-    }
-  };
+  var photoTemplate = document.querySelector('#picture').content;
+  var photosList = document.querySelector('.pictures');
 
-  var showDefaultPhotos = function () {
-    console.log(1);
-  };
-  var showRandomPhotos = function () {
-    console.log(2);
-  };
+  var photos = [];
 
-  var showDiscussed = function () {
-    var unsortedPhotos = photos;
-    var mostDiscussedPhotos = unsortedPhotos.sort(function (a, b) {
-      return b.comments.length - a.comments.length;
-    });
-    var photosMarkup = photosList.getElementsByClassName('picture');
-    while (photosMarkup.length > 0) {
-      photosMarkup[0].parentNode.removeChild(photosMarkup[0]);
-    }
-    renderPhotoGallery(mostDiscussedPhotos);
-  };
+  var successHandler = function(data) {
 
-  var filterValueToFunction = {
-    'filter-default': showDefaultPhotos,
-    'filter-random': showRandomPhotos,
-    'filter-discussed': showDiscussed,
-  };
-
-  var successHandler = function (data) {
     photos = data;
 
     // Renders photo gallery
     renderPhotoGallery(photos);
 
-    // Adds big photo modal view for all photos after rendering
-    /*     var addBigPhotoModal = function (index) {
-          var photoMinis = document.querySelectorAll('.picture');
-          for (var index = 0; index < photoMinis.length; index++) {
-            window.bigPhotoHandler(photoMinis[index], photos[i]);
-          }
-        } */
-    /*     var photoMinis = document.querySelectorAll('.picture');
-        for (var k = 0; k < photoMinis.length; k++) {
-          window.bigPhotoHandler(photoMinis[k], photos[k]);
-        } */
-
-    var updatePhotos = function (index) {
+    var updatePhotos = function(index) {
       var activeButton = form.querySelector('.img-filters__button--active');
       activeButton.classList.remove('img-filters__button--active');
       var newActiveButton = filterButtons[index];
@@ -66,8 +24,8 @@
       filterValueToFunction[newActiveButton.id]();
     };
 
-    var listenFilterButton = function (index) {
-      filterButtons[index].addEventListener('click', function () {
+    var listenFilterButton = function(index) {
+      filterButtons[index].addEventListener('click', function() {
         updatePhotos(index);
       });
     };
@@ -77,17 +35,70 @@
     }
   };
 
-  var photoTemplate = document.querySelector('#picture').content;
-  var fragment = document.createDocumentFragment();
-  var photosList = document.querySelector('.pictures');
-  var photos = [];
+  // Renders photo gallery
+  var renderPhotoGallery = function(photosArray) {
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < photosArray.length; i++) {
+      var newPhoto = window.createPhoto(photoTemplate, photosArray[i]);
+      fragment.appendChild(newPhoto);
+    }
+    photosList.appendChild(fragment);
+    addBigPhotoModal();
+  };
 
-  window.handleNewRequest('GET', URL, successHandler);
+  // Adds big photo modal view for all photos after rendering
+  var addBigPhotoModal = function() {
+    var photoMinis = document.querySelectorAll('.picture');
+    for (var i = 0; i < photoMinis.length; i++) {
+      window.bigPhotoHandler(photoMinis[i], photos[i]);
+    }
+  };
+
+  var clearPhotoGallery = function() {
+    var photosMarkup = photosList.getElementsByClassName('picture');
+    while (photosMarkup.length > 0) {
+      photosMarkup[0].parentNode.removeChild(photosMarkup[0]);
+    }
+  };
+
   // Get photos
+  window.handleNewRequest('GET', URL, successHandler);
 
+  // Enable filters
   var filters = document.querySelector('.img-filters');
   filters.classList.remove('img-filters--inactive');
 
   var form = document.querySelector('.img-filters__form');
   var filterButtons = form.querySelectorAll('.img-filters__button');
+
+  var showDefaultPhotos = function() {
+    clearPhotoGallery();
+    renderPhotoGallery(photos);
+  };
+
+  var showRandomPhotos = function() {
+    var randomPhotoArray = [];
+    var unsortedPhotos = photos.slice(0);
+    for (var i = 0; i < RANDOM_PHOTOS_TO_SHOW; i++) {
+      var randomPhoto = window.util.getRandomFromArray(unsortedPhotos);
+      randomPhotoArray.push(randomPhoto);
+    }
+    clearPhotoGallery();
+    renderPhotoGallery(randomPhotoArray);
+  };
+
+  var showDiscussed = function() {
+    var unsortedPhotos = photos.slice(0);
+    var mostDiscussedPhotos = unsortedPhotos.sort(function(a, b) {
+      return b.comments.length - a.comments.length;
+    });
+    clearPhotoGallery();
+    renderPhotoGallery(mostDiscussedPhotos);
+  };
+
+  var filterValueToFunction = {
+    'filter-default': showDefaultPhotos,
+    'filter-random': showRandomPhotos,
+    'filter-discussed': showDiscussed,
+  };
 })();
