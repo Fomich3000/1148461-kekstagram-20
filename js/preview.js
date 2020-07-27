@@ -8,8 +8,6 @@
   var bigPhotoCommentsNumber = bigPhotoSection.querySelector('.comments-count');
   var bigPhotoComments = bigPhotoSection.querySelector('.social__comments');
   var bigPhotoCaption = bigPhotoSection.querySelector('.social__caption');
-  /* var bigPhotoMoreLoader = bigPhotoSection.querySelector('.comments-loader');
-  var bigPhotoCommentCounter = bigPhotoSection.querySelector('.social__comment-count'); */
   var bigPhotoClose = bigPhotoSection.querySelector('.big-picture__cancel');
   var commentInput = bigPhotoSection.querySelector('.social__footer-text');
 

@@ -114,10 +114,16 @@
     evt.preventDefault();
     window.handleNewRequest('POST', URL, function () {
       form.reset();
+      var photoPreview = document.querySelector('.img-upload__preview img');
+      photoPreview.style.filter = 'none';
+      window.effects.change();
       closeForm();
       popupOpen('.success', '.success__inner', '.success__button', onButtonSuccessClose, onEscCloseSuccess);
     }, function () {
       form.reset();
+      var photoPreview = document.querySelector('.img-upload__preview img');
+      photoPreview.style.filter = 'none';
+      window.effects.change();
       closeForm();
       popupOpen('.error', '.error__inner', '.error__button', onButtonErrorClose, onEscCloseError);
     }, new FormData(form));

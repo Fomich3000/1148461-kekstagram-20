@@ -83,8 +83,8 @@
   };
 
   var changeEffect = function () {
-    applyEffect();
     setDefaultLevel();
+    applyEffect();
   };
 
   effectLevelPin.addEventListener('mousedown', function (downEvt) {
