@@ -71,30 +71,30 @@
   var form = document.querySelector('.img-filters__form');
   var filterButtons = form.querySelectorAll('.img-filters__button');
 
-  var showDefaultPhotos = function() {
+  var showDefaultPhotos = window.debounce(function() {
     clearPhotoGallery();
     renderPhotoGallery(photos);
-  };
+  });
 
-  var showRandomPhotos = function() {
+  var showRandomPhotos = window.debounce(function() {
+    var randomNumbersArray = window.util.getRandomNumbersArray(0, photos.length);
     var randomPhotoArray = [];
-    var unsortedPhotos = photos.slice(0);
-    for (var i = 0; i < RANDOM_PHOTOS_TO_SHOW; i++) {
-      var randomPhoto = window.util.getRandomFromArray(unsortedPhotos);
-      randomPhotoArray.push(randomPhoto);
+
+    for (var i = 0; i < randomNumbersArray.length; i++) {
+      randomPhotoArray.push(photos[randomNumbersArray[i]]);
     }
     clearPhotoGallery();
     renderPhotoGallery(randomPhotoArray);
-  };
+  });
 
-  var showDiscussed = function() {
+  var showDiscussed = window.debounce(function() {
     var unsortedPhotos = photos.slice(0);
     var mostDiscussedPhotos = unsortedPhotos.sort(function(a, b) {
       return b.comments.length - a.comments.length;
     });
     clearPhotoGallery();
     renderPhotoGallery(mostDiscussedPhotos);
-  };
+  });
 
   var filterValueToFunction = {
     'filter-default': showDefaultPhotos,

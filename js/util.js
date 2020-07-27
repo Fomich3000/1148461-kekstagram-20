@@ -26,9 +26,23 @@
       var randomValue = Math.floor(Math.random() * (max - min) + min);
       return randomValue;
     },
-    getRandomFromArray: function (array) {
-      var randomValue = array[window.util.getRandomInRange(0, array.length)];
-      return randomValue;
-    }
+
+    getRandomNumbersArray: function(min, max) {
+      var array = [];
+      for (var i = 0; array.length < max; i++) {
+        var isEqual = false;
+        var randomNumber = window.util.getRandomInRange(min, max);
+        for (var j = 0; j < array.length; j++) {
+          if (randomNumber === array[j]) {
+            isEqual = true;
+            break;
+          }
+        }
+        if (!isEqual) {
+          array[array.length] = randomNumber;
+        }
+      }
+      return array.slice(0, 10);
+    },
   };
 })();
