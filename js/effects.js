@@ -2,7 +2,6 @@
 
 (function () {
   var DEFAULT_EFFECT_LEVEL = 100;
-  var DEFAULT_EFFECT = document.querySelector('#effect-none');
   var effectsSettings = {
 
     'chrome': {
@@ -42,11 +41,7 @@
     }
   };
 
-  var photoPreview = document.querySelector('.img-upload__preview img');
   var effects = document.querySelector('.img-upload__effects');
-  var effectLevel = document.querySelector('.effect-level');
-  var effectLevelPin = document.querySelector('.effect-level__pin');
-  var effectLevelValue = document.querySelector('.effect-level__value');
 
   var line = document.querySelector('.effect-level__line');
   var depth = document.querySelector('.effect-level__depth');
@@ -56,65 +51,77 @@
     return percentNumber.toFixed(1);
   };
 
+  var photoPreview = document.querySelector('.img-upload__preview img');
+
   var setFilter = function (effect) {
     var currentEffectSettings = effectsSettings[effect];
     var filterString = '' + currentEffectSettings.type + '(' + currentEffectSettings.calculateValue(effectLevelValue.value) + currentEffectSettings.unit + ')';
     photoPreview.style.filter = filterString;
   };
 
-  var changeEffect = function () {
+  var applyEffect = function () {
     var checkedEffect = window.form.querySelector('.effects__radio:checked');
     var effectValue = checkedEffect.value;
     if (effectValue === 'none') {
-      photoPreview.style.filter = 'none';
+      photoPreview.style.effect = 'none';
     } else {
       setFilter(effectValue);
     }
+    return effectValue;
+  };
+
+  var effectLevel = document.querySelector('.effect-level');
+  var effectLevelPin = document.querySelector('.effect-level__pin');
+  var effectLevelValue = document.querySelector('.effect-level__value');
+
+  var setDefaultLevel = function () {
+    var effectValue = applyEffect();
     effectLevel.classList.toggle('hidden', effectValue === 'none');
     effectLevelPin.style.left = DEFAULT_EFFECT_LEVEL + '%';
     depth.style.width = effectLevelPin.style.left;
     effectLevelValue.value = DEFAULT_EFFECT_LEVEL;
+  };
 
-    // Slider events
-    effectLevelPin.addEventListener('mousedown', function (downEvt) {
-      downEvt.preventDefault();
-      var shiftX = downEvt.clientX - effectLevelPin.getBoundingClientRect().left;
+  var changeEffect = function () {
+    setDefaultLevel();
+    applyEffect();
+  };
 
-      var onMouseMove = function (moveEvt) {
-        var newX = moveEvt.clientX - shiftX - line.getBoundingClientRect().left;
-        if (newX < 0) {
-          newX = 0;
-        }
-        var lineRightSide = line.offsetWidth;
-        if (newX > lineRightSide) {
-          newX = lineRightSide;
-        }
-        effectLevelPin.style.left = pxToPercent(newX) + '%';
-        depth.style.width = effectLevelPin.style.left;
-      };
+  effectLevelPin.addEventListener('mousedown', function (downEvt) {
+    downEvt.preventDefault();
+    var shiftX = downEvt.clientX - effectLevelPin.getBoundingClientRect().left;
 
-      var onMouseStop = function () {
-        effectLevelValue.value = parseInt(effectLevelPin.style.left, 10);
+    var onMouseMove = function (moveEvt) {
+      var newX = moveEvt.clientX - shiftX - line.getBoundingClientRect().left;
+      if (newX < 0) {
+        newX = 0;
+      }
+      var lineRightSide = line.offsetWidth;
+      if (newX > lineRightSide) {
+        newX = lineRightSide;
+      }
+      effectLevelPin.style.left = pxToPercent(newX) + '%';
+      depth.style.width = effectLevelPin.style.left;
+    };
+
+    var onMouseStop = function () {
+      var effectValue = applyEffect();
+      effectLevelValue.value = parseInt(effectLevelPin.style.left, 10);
+      if (effectValue !== 'none') {
         setFilter(effectValue);
-        document.removeEventListener('mousemove', onMouseMove);
-      };
+      } else {
+        photoPreview.style.effect = 'none';
+      }
+      document.removeEventListener('mousemove', onMouseMove);
+    };
 
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseStop);
-    });
-  };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseStop);
+  });
 
-  var resetFilter = function () {
-    var checkedEffect = window.form.querySelector('.effects__radio:checked');
-    checkedEffect.checked = false;
-    DEFAULT_EFFECT.checked = true;
-    changeEffect();
-  };
-
-  window.filters = {
-    effects: effects,
+  window.effects = {
+    list: effects,
     change: changeEffect,
-    reset: resetFilter
   };
 
   effectLevel.classList.add('hidden');

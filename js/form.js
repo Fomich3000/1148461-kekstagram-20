@@ -20,7 +20,7 @@
     document.addEventListener('keydown', onEscCloseForm);
     hashtagInput.addEventListener('keydown', window.util.stayOpenOnEsc);
     commentsInput.addEventListener('keydown', window.util.stayOpenOnEsc);
-    window.filters.effects.addEventListener('change', window.filters.change);
+    window.effects.list.addEventListener('change', window.effects.change);
   };
 
   var closeForm = function () {
@@ -31,7 +31,7 @@
     hashtagInput.removeEventListener('keydown', window.util.stayOpenOnEsc);
     commentsInput.removeEventListener('keydown', window.util.stayOpenOnEsc);
     editFormCloseButton.removeEventListener('click', onCloseClick);
-    window.filters.effects.removeEventListener('change', window.filters.change);
+    window.effects.list.removeEventListener('change', window.effects.change);
   };
 
   var onCloseClick = function () {
@@ -113,17 +113,17 @@
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.handleNewRequest('POST', URL, function () {
-      window.scale.setScale(window.scale.defaultScale);
-      window.filters.reset();
-      hashtagInput.value = '';
-      commentsInput.value = '';
+      form.reset();
+      var photoPreview = document.querySelector('.img-upload__preview img');
+      photoPreview.style.filter = 'none';
+      window.effects.change();
       closeForm();
       popupOpen('.success', '.success__inner', '.success__button', onButtonSuccessClose, onEscCloseSuccess);
     }, function () {
-      window.scale.setScale(window.scale.defaultScale);
-      window.filters.reset();
-      hashtagInput.value = '';
-      commentsInput.value = '';
+      form.reset();
+      var photoPreview = document.querySelector('.img-upload__preview img');
+      photoPreview.style.filter = 'none';
+      window.effects.change();
       closeForm();
       popupOpen('.error', '.error__inner', '.error__button', onButtonErrorClose, onEscCloseError);
     }, new FormData(form));
