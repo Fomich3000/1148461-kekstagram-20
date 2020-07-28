@@ -27,7 +27,7 @@
       return randomValue;
     },
 
-    getRandomNumbersArray: function(min, max) {
+    getRandomNumbersArray: function (min, max) {
       var array = [];
       for (var i = 0; array.length < max; i++) {
         var isEqual = false;
@@ -42,7 +42,7 @@
           array[array.length] = randomNumber;
         }
       }
-      return array.slice(0, 10);
+      return array;
     },
   };
 })();

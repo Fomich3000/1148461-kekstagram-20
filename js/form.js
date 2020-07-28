@@ -2,8 +2,10 @@
 
 (function () {
   var URL = 'https://javascript.pages.academy/kekstagram/';
+  var HASHTAGS_MAX = 5;
 
   var body = document.querySelector('body');
+  var main = document.querySelector('main');
   var form = document.querySelector('.img-upload__form');
   var uploadControl = document.querySelector('#upload-file');
   var photoEditForm = document.querySelector('.img-upload__overlay');
@@ -48,7 +50,6 @@
   });
 
   var createPopup = function (templateId, popupClass) {
-    var main = document.querySelector('main');
     var template = document.querySelector(templateId).content;
     var popupNode = template.cloneNode(true);
     var popup = popupNode.querySelector(popupClass);
@@ -129,6 +130,7 @@
     }, new FormData(form));
   });
 
+
   var checkForDuplicates = function (array) {
     var valuesSoFar = [];
     for (var j = 0; j < array.length; ++j) {
@@ -145,7 +147,7 @@
   var hashtagValidation = function (hashtags, hashtag) {
     var firstHashRegexp = /^#/;
     var alphanumRegexp = /^#[a-zA-Za-zA-Z0-9]+$/;
-    if (hashtags.length > 5) {
+    if (hashtags.length > HASHTAGS_MAX) {
       window.util.showNotification('Максимальное количество хештегов - 5', hashtagInput);
     } else if (hashtag[0] === '#' && hashtag.length === 1) {
       window.util.showNotification('Хэштэг не может состоять только из cимвола "#"', hashtagInput);
@@ -165,8 +167,8 @@
 
   hashtagInput.addEventListener('input', function () {
     var hashtagsArray = hashtagInput.value.split(' ');
-    for (var i = 0; i < hashtagsArray.length; i++) {
-      hashtagValidation(hashtagsArray, hashtagsArray[i]);
-    }
+    hashtagsArray.forEach(function (hashtag) {
+      hashtagValidation(hashtagsArray, hashtag);
+    });
   });
 })();
