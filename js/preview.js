@@ -16,10 +16,6 @@
   var bigPhotoCommentsCounter = bigPhotoSection.querySelector('.social__comment-count');
   var loadMoreComments = bigPhotoSection.querySelector('.comments-loader');
 
-  var commentsArray = [];
-  var commentMock;
-  var commentTemplate;
-
   var createBigPhoto = function (photo) {
     bigPhotoImg.querySelector('img').src = photo.url;
     bigPhotoLikesNumber.textContent = photo.likes;
@@ -28,9 +24,20 @@
   };
 
   var showNthComments = function (photoComments) {
-    commentsArray = photoComments;
-    createComments(commentsArray.slice(0, COMMENTS_TO_SHOW));
+
+    var commentsArray = photoComments;
     var counter = COMMENTS_TO_SHOW;
+
+    createComments(commentsArray.slice(0, COMMENTS_TO_SHOW));
+
+    if (commentsArray.length <= COMMENTS_TO_SHOW || commentsArray.length <= counter) {
+      loadMoreComments.classList.add('hidden');
+      loadMoreComments.removeEventListener('click', onClickLoadMoreComments);
+    } else {
+      loadMoreComments.classList.remove('hidden');
+    }
+
+    bigPhotoCommentsCounter.textContent = Math.min(counter, commentsArray.length) + ' из ' + commentsArray.length + ' комментариев';
 
     var onClickLoadMoreComments = function () {
 
@@ -38,21 +45,23 @@
       createComments(commentsToShow);
 
       counter += COMMENTS_TO_SHOW;
+
       bigPhotoCommentsCounter.textContent = Math.min(counter, commentsArray.length) + ' из ' + commentsArray.length + ' комментариев';
+
       if (commentsArray.length <= COMMENTS_TO_SHOW || commentsArray.length <= counter) {
         loadMoreComments.classList.add('hidden');
         loadMoreComments.removeEventListener('click', onClickLoadMoreComments);
       }
-      return counter;
     };
-
     loadMoreComments.addEventListener('click', onClickLoadMoreComments);
-    return onClickLoadMoreComments;
   };
+
+  var commentMock = bigPhotoComments.querySelector('.social__comment');
 
   var createComments = function (photoComments) {
     var fragment = document.createDocumentFragment();
     photoComments.forEach(function (comment) {
+      var commentTemplate = commentMock.cloneNode(true);
       var template = commentTemplate;
       template.querySelector('img').src = comment.avatar;
       template.querySelector('img').alt = comment.authorNames;
@@ -63,13 +72,10 @@
   };
 
   var openBigPhoto = function (photo) {
-    commentMock = bigPhotoComments.querySelector('.social__comment');
-    commentTemplate = commentMock.cloneNode(true);
     bigPhotoComments.innerHTML = '';
     bigPhotoSection.classList.remove('hidden');
     body.classList.add('modal-open');
-    commentsArray = photo.comments;
-    console.log(commentsArray);
+    var commentsArray = photo.comments;
 
     createBigPhoto(photo);
     showNthComments(commentsArray);
@@ -82,6 +88,8 @@
   var closeBigPhoto = function () {
     bigPhotoSection.classList.add('hidden');
     body.classList.remove('modal-open');
+
+
     document.removeEventListener('keydown', onEscClose);
     bigPhotoClose.removeEventListener('click', onCloseClick);
     commentInput.removeEventListener('keydown', window.util.stayOpenOnEsc);
