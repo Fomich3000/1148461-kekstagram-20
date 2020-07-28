@@ -14,7 +14,7 @@
   var commentInput = bigPhotoSection.querySelector('.social__footer-text');
 
   var bigPhotoCommentsCounter = bigPhotoSection.querySelector('.social__comment-count');
-  var loadMoreComments = bigPhotoSection.querySelector('.comments-loader');
+  var loadMoreCommentsButton = bigPhotoSection.querySelector('.comments-loader');
 
   var createBigPhoto = function (photo) {
     bigPhotoImg.querySelector('img').src = photo.url;
@@ -23,7 +23,7 @@
     bigPhotoCaption.textContent = photo.description;
   };
 
-  var showNthComments = function (photoComments) {
+  var loadMoreComments = function (photoComments) {
 
     var commentsArray = photoComments;
     var counter = COMMENTS_TO_SHOW;
@@ -31,10 +31,10 @@
     createComments(commentsArray.slice(0, COMMENTS_TO_SHOW));
 
     if (commentsArray.length <= COMMENTS_TO_SHOW || commentsArray.length <= counter) {
-      loadMoreComments.classList.add('hidden');
-      loadMoreComments.removeEventListener('click', onClickLoadMoreComments);
+      loadMoreCommentsButton.classList.add('hidden');
+      loadMoreCommentsButton.removeEventListener('click', onClickLoadMoreComments);
     } else {
-      loadMoreComments.classList.remove('hidden');
+      loadMoreCommentsButton.classList.remove('hidden');
     }
 
     bigPhotoCommentsCounter.textContent = Math.min(counter, commentsArray.length) + ' из ' + commentsArray.length + ' комментариев';
@@ -49,11 +49,11 @@
       bigPhotoCommentsCounter.textContent = Math.min(counter, commentsArray.length) + ' из ' + commentsArray.length + ' комментариев';
 
       if (commentsArray.length <= COMMENTS_TO_SHOW || commentsArray.length <= counter) {
-        loadMoreComments.classList.add('hidden');
-        loadMoreComments.removeEventListener('click', onClickLoadMoreComments);
+        loadMoreCommentsButton.classList.add('hidden');
+        loadMoreCommentsButton.removeEventListener('click', onClickLoadMoreComments);
       }
     };
-    loadMoreComments.addEventListener('click', onClickLoadMoreComments);
+    loadMoreCommentsButton.addEventListener('click', onClickLoadMoreComments);
   };
 
   var commentMock = bigPhotoComments.querySelector('.social__comment');
@@ -78,7 +78,7 @@
     var commentsArray = photo.comments;
 
     createBigPhoto(photo);
-    showNthComments(commentsArray);
+    loadMoreComments(commentsArray);
 
     bigPhotoClose.addEventListener('click', onCloseClick);
     document.addEventListener('keydown', onEscClose);

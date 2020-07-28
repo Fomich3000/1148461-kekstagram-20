@@ -17,7 +17,7 @@
     },
 
     showNotification: function (notificationText, whereToShow) {
-      whereToShow.style.borderColor = 'tomato';
+      whereToShow.style.outline = 'tomato solid 2px';
       whereToShow.setCustomValidity(notificationText);
       whereToShow.reportValidity();
     },

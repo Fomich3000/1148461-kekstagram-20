@@ -7,6 +7,7 @@
   var body = document.querySelector('body');
   var main = document.querySelector('main');
   var form = document.querySelector('.img-upload__form');
+  var submitButton = document.querySelector('.img-upload__submit');
   var uploadControl = document.querySelector('#upload-file');
   var photoEditForm = document.querySelector('.img-upload__overlay');
   var editFormCloseButton = document.querySelector('.img-upload__cancel');
@@ -130,6 +131,14 @@
     }, new FormData(form));
   });
 
+  submitButton.addEventListener('click', function () {
+    if (hashtagInput.value) {
+      var hashtagsArray = hashtagInput.value.split(' ');
+      for (var i = 0; i < hashtagsArray.length; i++) {
+        hashtagValidation(hashtagsArray, hashtagsArray[i]);
+      }
+    }
+  });
 
   var checkForDuplicates = function (array) {
     var valuesSoFar = [];
@@ -161,14 +170,7 @@
       window.util.showNotification('Хештеги могут содержать только буквы и цифры', hashtagInput);
     } else {
       window.util.showNotification('', hashtagInput);
-      hashtagInput.style.borderColor = 'green';
+      hashtagInput.style.outline = 'none';
     }
   };
-
-  hashtagInput.addEventListener('input', function () {
-    var hashtagsArray = hashtagInput.value.split(' ');
-    hashtagsArray.forEach(function (hashtag) {
-      hashtagValidation(hashtagsArray, hashtag);
-    });
-  });
 })();
