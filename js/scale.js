@@ -28,27 +28,17 @@
 
   var onScaleMoreButtonClick = function () {
     onChangeScaleButtonClick(MAX_SCALE, function (a, b) {
-      if (a < b) {
-        return true;
-      } else {
-        return false;
-      }
+      return a < b ? true : false;
     }, function (a, b) {
-      var result = a += b;
-      return result;
+      return (a += b);
     });
   };
 
   var onScaleLessButtonClick = function () {
     onChangeScaleButtonClick(MIN_SCALE, function (a, b) {
-      if (a > b) {
-        return true;
-      } else {
-        return false;
-      }
+      return a > b ? true : false;
     }, function (a, b) {
-      var result = a -= b;
-      return result;
+      return (a -= b);
     });
   };
 
