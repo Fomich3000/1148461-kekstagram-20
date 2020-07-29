@@ -5,7 +5,7 @@
     OK: 200
   };
 
-  window.handleNewRequest = function (method, url, onSuccess, onError, data) {
+  window.createNewRequest = function (method, url, onSuccess, onError, data) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 

@@ -23,7 +23,7 @@
     filterValueToFunction[buttonId]();
   });
 
-  var successHandler = function (data) {
+  var onSuccesResponseDo = function (data) {
 
     photos = data;
 
@@ -40,34 +40,33 @@
   };
 
   // Renders photo gallery
-  var renderPhotoGallery = function (photosArray) {
+  var renderPhotoGallery = function (photosToRender) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < photosArray.length; i++) {
-      var newPhoto = window.createPhoto(photoTemplate, photosArray[i]);
+    for (var i = 0; i < photosToRender.length; i++) {
+      var newPhoto = window.createPhoto(photoTemplate, photosToRender[i]);
       fragment.appendChild(newPhoto);
     }
     photosList.appendChild(fragment);
-    addBigPhotoModal();
+    addBigPhotoModal(photosToRender);
   };
 
   // Adds big photo modal view for all photos after rendering
-  var addBigPhotoModal = function () {
-
+  var addBigPhotoModal = function (galleryPhotos) {
     var photoMinis = document.querySelectorAll('.picture');
-    photoMinis.forEach(function (photoMini, index) {
-      window.bigPhotoHandler(photoMini, photos[index]);
+    galleryPhotos.forEach(function (galleryPhoto, index) {
+      window.addClickEventToPhoto(photoMinis[index], galleryPhoto);
     });
   };
 
   var clearPhotoGallery = function () {
-    var photosMarkup = photosList.getElementsByClassName('picture');
-    while (photosMarkup.length > 0) {
-      photosMarkup[0].parentNode.removeChild(photosMarkup[0]);
-    }
+    var photoMinis = photosList.querySelectorAll('.picture');
+    photoMinis.forEach(function (photoMini) {
+      photoMini.parentNode.removeChild(photoMini);
+    });
   };
 
   // Get photos
-  window.handleNewRequest('GET', URL, successHandler);
+  window.createNewRequest('GET', URL, onSuccesResponseDo);
 
   // Enable filters
   var filters = document.querySelector('.img-filters');

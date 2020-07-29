@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   var DEFAULT_SCALE = 100;
   var MAX_SCALE = 100;
   var MIN_SCALE = 25;
@@ -18,29 +17,46 @@
   };
 
   window.scale = {
-    setScale: setScale,
-    defaultScale: DEFAULT_SCALE
+    set: setScale,
+    default: DEFAULT_SCALE
+  };
+
+  var onChangeScaleButtonClick = function (boundary, checkForMinMax, calculateScale) {
+    var scale = parseInt(scaleNumber.value, 10);
+    if (checkForMinMax(scale, boundary)) {
+      scale = calculateScale(scale, SCALE_STEP);
+      setScale(scale);
+    } else {
+      scaleNumber.value = boundary + '%';
+    }
   };
 
   setScale(DEFAULT_SCALE);
 
   scaleMore.addEventListener('click', function () {
-    var scale = parseInt(scaleNumber.value, 10);
-    if (scale < MAX_SCALE) {
-      scale += SCALE_STEP;
-      setScale(scale);
-    } else {
-      scaleNumber.value = MAX_SCALE + '%';
-    }
+    onChangeScaleButtonClick(MAX_SCALE, function (a, b) {
+      if (a < b) {
+        return true;
+      } else {
+        return false;
+      }
+    }, function (a, b) {
+      var result = a += b;
+      return result;
+    });
   });
 
   scaleLess.addEventListener('click', function () {
-    var scale = parseInt(scaleNumber.value, 10);
-    if (scale > MIN_SCALE) {
-      scale -= SCALE_STEP;
-      setScale(scale);
-    } else {
-      scaleNumber.value = MIN_SCALE + '%';
-    }
+    onChangeScaleButtonClick(MIN_SCALE, function (a, b) {
+      if (a > b) {
+        return true;
+      } else {
+        return false;
+      }
+    }, function (a, b) {
+      var result = a -= b;
+      return result;
+    });
   });
 })();
+

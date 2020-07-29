@@ -46,7 +46,7 @@
   var line = document.querySelector('.effect-level__line');
   var depth = document.querySelector('.effect-level__depth');
 
-  var pxToPercent = function (px) {
+  var convertPxToPercents = function (px) {
     var percentNumber = (px / (line.offsetWidth / 100));
     return percentNumber.toFixed(1);
   };
@@ -100,7 +100,7 @@
       if (newX > lineRightSide) {
         newX = lineRightSide;
       }
-      effectLevelPin.style.left = pxToPercent(newX) + '%';
+      effectLevelPin.style.left = convertPxToPercents(newX) + '%';
       depth.style.width = effectLevelPin.style.left;
     };
 
@@ -113,6 +113,7 @@
         photoPreview.style.effect = 'none';
       }
       document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseStop);
     };
 
     document.addEventListener('mousemove', onMouseMove);
