@@ -63,7 +63,7 @@
     var checkedEffect = window.form.querySelector('.effects__radio:checked');
     var effectValue = checkedEffect.value;
     if (effectValue === 'none') {
-      photoPreview.style.effect = 'none';
+      photoPreview.style.filter = 'none';
     } else {
       setFilter(effectValue);
     }
