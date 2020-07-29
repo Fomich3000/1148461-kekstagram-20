@@ -22,8 +22,6 @@
     photoEditForm.classList.remove('hidden');
     editFormCloseButton.addEventListener('click', onCloseClick);
     document.addEventListener('keydown', onEscCloseForm);
-    window.scale.more.addEventListener('click', window.scale.onMoreButtonClick);
-    window.scale.less.addEventListener('click', window.scale.onLessButtonClick);
     hashtagInput.addEventListener('keydown', window.util.stayOpenOnEsc);
     commentsInput.addEventListener('keydown', window.util.stayOpenOnEsc);
     window.effects.list.addEventListener('change', window.effects.change);
@@ -34,8 +32,6 @@
     body.classList.remove('modal-open');
     uploadControl.value = '';
     document.removeEventListener('keydown', onEscCloseForm);
-    window.scale.more.removeEventListener('click', window.scale.onMoreButtonClick);
-    window.scale.less.removeEventListener('click', window.scale.onLessButtonClick);
     hashtagInput.removeEventListener('keydown', window.util.stayOpenOnEsc);
     commentsInput.removeEventListener('keydown', window.util.stayOpenOnEsc);
     editFormCloseButton.removeEventListener('click', onCloseClick);
