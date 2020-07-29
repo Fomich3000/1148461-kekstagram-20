@@ -16,11 +16,6 @@
     photoPreview.style.transform = 'scale(' + scaleValue / 100 + ')';
   };
 
-  window.scale = {
-    set: setScale,
-    default: DEFAULT_SCALE
-  };
-
   var onChangeScaleButtonClick = function (boundary, checkForMinMax, calculateScale) {
     var scale = parseInt(scaleNumber.value, 10);
     if (checkForMinMax(scale, boundary)) {
@@ -31,9 +26,7 @@
     }
   };
 
-  setScale(DEFAULT_SCALE);
-
-  scaleMore.addEventListener('click', function () {
+  var onScaleMoreButtonClick = function () {
     onChangeScaleButtonClick(MAX_SCALE, function (a, b) {
       if (a < b) {
         return true;
@@ -44,9 +37,9 @@
       var result = a += b;
       return result;
     });
-  });
+  };
 
-  scaleLess.addEventListener('click', function () {
+  var onScaleLessButtonClick = function () {
     onChangeScaleButtonClick(MIN_SCALE, function (a, b) {
       if (a > b) {
         return true;
@@ -57,6 +50,17 @@
       var result = a -= b;
       return result;
     });
-  });
-})();
+  };
 
+  setScale(DEFAULT_SCALE);
+
+  window.scale = {
+    less: scaleLess,
+    more: scaleMore,
+    onMoreButtonClick: onScaleMoreButtonClick,
+    onLessButtonClick: onScaleLessButtonClick,
+    set: setScale,
+    default: DEFAULT_SCALE
+  };
+
+})();
