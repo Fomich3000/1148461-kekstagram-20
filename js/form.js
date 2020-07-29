@@ -10,6 +10,7 @@
   var submitButton = document.querySelector('.img-upload__submit');
   var uploadControl = document.querySelector('#upload-file');
   var photoEditForm = document.querySelector('.img-upload__overlay');
+  var photoPreview = document.querySelector('.img-upload__preview img');
   var editFormCloseButton = document.querySelector('.img-upload__cancel');
   var hashtagInput = photoEditForm.querySelector('.text__hashtags');
   var commentsInput = photoEditForm.querySelector('.text__description');
@@ -45,8 +46,15 @@
     window.util.onEscPress(evt, closeForm);
   };
 
+  var resetPhotoOptions = function () {
+    photoPreview.style.filter = 'none';
+    window.effects.change();
+    window.scale.set(window.scale.default);
+  };
+
   // Photo uploading
   uploadControl.addEventListener('change', function () {
+    resetPhotoOptions();
     openForm();
   });
 
@@ -58,45 +66,45 @@
     main.insertBefore(popupNode, main.firstChild);
   };
 
-  var popupOpen = function (popupClass, popupInner, popupButton, closeHandler, escKeyHandler) {
+  var popupOpen = function (popupClass, popupInner, popupButton, onElementClick, onEscPress) {
     var popup = document.querySelector(popupClass);
     popup.classList.remove('hidden');
     var button = document.querySelector(popupButton);
-    button.addEventListener('click', closeHandler);
-    document.addEventListener('keydown', escKeyHandler);
-    onDocumentClosePopup(popupInner, closeHandler);
+    button.addEventListener('click', onElementClick);
+    document.addEventListener('keydown', onEscPress);
+    onDocumentClosePopup(popupInner, onElementClick);
   };
 
-  var popupClose = function (popupClass, popupButton, closeHandler, escKeyHandler) {
+  var popupClose = function (popupClass, popupButton, onElementClick, onEscPress) {
     var popup = document.querySelector(popupClass);
     var button = document.querySelector(popupButton);
     popup.classList.add('hidden');
-    button.removeEventListener('click', closeHandler);
-    document.removeEventListener('keydown', escKeyHandler);
+    button.removeEventListener('click', onElementClick);
+    document.removeEventListener('keydown', onEscPress);
   };
 
-  var onButtonSuccessClose = function () {
+  var onSuccessCloseButtonClick = function () {
     popupClose('.success', '.success__button');
   };
 
-  var onButtonErrorClose = function () {
+  var onErrorCloseButtonClick = function () {
     popupClose('.error', '.error__button');
   };
 
   var onEscCloseSuccess = function (evt) {
-    window.util.onEscPress(evt, onEscKeySuccessHandler);
+    window.util.onEscPress(evt, onSuccessEscPress);
   };
 
   var onEscCloseError = function (evt) {
-    window.util.onEscPress(evt, onEscKeyErrorHandler);
+    window.util.onEscPress(evt, onErrorEscPress);
   };
 
-  var onEscKeySuccessHandler = function () {
-    popupClose('.success', '.success__button', onButtonSuccessClose, onEscCloseSuccess);
+  var onSuccessEscPress = function () {
+    popupClose('.success', '.success__button', onSuccessCloseButtonClick, onEscCloseSuccess);
   };
 
-  var onEscKeyErrorHandler = function () {
-    popupClose('.error', '.error__button', onButtonErrorClose, onEscCloseError);
+  var onErrorEscPress = function () {
+    popupClose('.error', '.error__button', onErrorCloseButtonClick, onEscCloseError);
   };
 
   var onDocumentClosePopup = function (elementClass, action) {
@@ -114,20 +122,16 @@
 
   form.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.handleNewRequest('POST', URL, function () {
+    window.createNewRequest('POST', URL, function () {
       form.reset();
-      var photoPreview = document.querySelector('.img-upload__preview img');
-      photoPreview.style.filter = 'none';
-      window.effects.change();
+      resetPhotoOptions();
       closeForm();
-      popupOpen('.success', '.success__inner', '.success__button', onButtonSuccessClose, onEscCloseSuccess);
+      popupOpen('.success', '.success__inner', '.success__button', onSuccessCloseButtonClick, onEscCloseSuccess);
     }, function () {
       form.reset();
-      var photoPreview = document.querySelector('.img-upload__preview img');
-      photoPreview.style.filter = 'none';
-      window.effects.change();
+      resetPhotoOptions();
       closeForm();
-      popupOpen('.error', '.error__inner', '.error__button', onButtonErrorClose, onEscCloseError);
+      popupOpen('.error', '.error__inner', '.error__button', onErrorCloseButtonClick, onEscCloseError);
     }, new FormData(form));
   });
 

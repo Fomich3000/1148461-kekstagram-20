@@ -25,32 +25,35 @@
 
   var loadMoreComments = function (photoComments) {
 
-    var commentsArray = photoComments;
+    var comments = photoComments;
     var counter = COMMENTS_TO_SHOW;
 
-    createComments(commentsArray.slice(0, COMMENTS_TO_SHOW));
-
-    if (commentsArray.length <= COMMENTS_TO_SHOW || commentsArray.length <= counter) {
+    var hideLoadMoreCommentsButton = function () {
       loadMoreCommentsButton.classList.add('hidden');
       loadMoreCommentsButton.removeEventListener('click', onClickLoadMoreComments);
+    };
+
+    createComments(comments.slice(0, COMMENTS_TO_SHOW));
+
+    if (comments.length <= COMMENTS_TO_SHOW || comments.length <= counter) {
+      hideLoadMoreCommentsButton();
     } else {
       loadMoreCommentsButton.classList.remove('hidden');
     }
 
-    bigPhotoCommentsCounter.textContent = Math.min(counter, commentsArray.length) + ' из ' + commentsArray.length + ' комментариев';
+    bigPhotoCommentsCounter.textContent = Math.min(counter, comments.length) + ' из ' + comments.length + ' комментариев';
 
     var onClickLoadMoreComments = function () {
 
-      var commentsToShow = commentsArray.slice(counter, counter + COMMENTS_TO_SHOW);
+      var commentsToShow = comments.slice(counter, counter + COMMENTS_TO_SHOW);
       createComments(commentsToShow);
 
       counter += COMMENTS_TO_SHOW;
 
-      bigPhotoCommentsCounter.textContent = Math.min(counter, commentsArray.length) + ' из ' + commentsArray.length + ' комментариев';
+      bigPhotoCommentsCounter.textContent = Math.min(counter, comments.length) + ' из ' + comments.length + ' комментариев';
 
-      if (commentsArray.length <= COMMENTS_TO_SHOW || commentsArray.length <= counter) {
-        loadMoreCommentsButton.classList.add('hidden');
-        loadMoreCommentsButton.removeEventListener('click', onClickLoadMoreComments);
+      if (comments.length <= COMMENTS_TO_SHOW || comments.length <= counter) {
+        hideLoadMoreCommentsButton();
       }
     };
     loadMoreCommentsButton.addEventListener('click', onClickLoadMoreComments);
@@ -63,8 +66,9 @@
     photoComments.forEach(function (comment) {
       var commentTemplate = commentMock.cloneNode(true);
       var template = commentTemplate;
-      template.querySelector('img').src = comment.avatar;
-      template.querySelector('img').alt = comment.authorNames;
+      var commentAvatar = template.querySelector('img');
+      commentAvatar.src = comment.avatar;
+      commentAvatar.alt = comment.authorNames;
       template.querySelector('.social__text').textContent = comment.message;
       fragment.appendChild(template);
     });
@@ -75,10 +79,10 @@
     bigPhotoComments.innerHTML = '';
     bigPhotoSection.classList.remove('hidden');
     body.classList.add('modal-open');
-    var commentsArray = photo.comments;
+    var comments = photo.comments;
 
     createBigPhoto(photo);
-    loadMoreComments(commentsArray);
+    loadMoreComments(comments);
 
     bigPhotoClose.addEventListener('click', onCloseClick);
     document.addEventListener('keydown', onEscClose);
@@ -103,7 +107,7 @@
     closeBigPhoto();
   };
 
-  window.bigPhotoHandler = function (element, photo) { // В целях замыкания в цикле
+  window.addClickEventToPhoto = function (element, photo) {
     element.addEventListener('click', function (evt) {
       evt.preventDefault();
       openBigPhoto(photo);

@@ -28,21 +28,21 @@
     },
 
     getRandomNumbersArray: function (min, max) {
-      var array = [];
-      for (var i = 0; array.length < max; i++) {
+      var randomNumbers = [];
+      for (var i = 0; randomNumbers.length < max; i++) {
         var isEqual = false;
         var randomNumber = window.util.getRandomInRange(min, max);
-        for (var j = 0; j < array.length; j++) {
-          if (randomNumber === array[j]) {
+        for (var j = 0; j < randomNumbers.length; j++) {
+          if (randomNumber === randomNumbers[j]) {
             isEqual = true;
             break;
           }
         }
         if (!isEqual) {
-          array[array.length] = randomNumber;
+          randomNumbers[randomNumbers.length] = randomNumber;
         }
       }
-      return array;
+      return randomNumbers;
     },
   };
 })();
