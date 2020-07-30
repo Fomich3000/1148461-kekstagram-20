@@ -3,6 +3,7 @@
 (function () {
   var URL = 'https://javascript.pages.academy/kekstagram/';
   var HASHTAGS_MAX = 5;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var body = document.querySelector('body');
   var main = document.querySelector('main');
@@ -58,6 +59,23 @@
 
   // Photo uploading
   uploadControl.addEventListener('change', function () {
+    var file = uploadControl.files[0];
+    var fileName = file.name.toLowerCase();
+
+    var matches = FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+
+    if (matches) {
+      var reader = new FileReader();
+
+      reader.addEventListener('load', function () {
+        photoPreview.src = reader.result;
+      });
+
+      reader.readAsDataURL(file);
+    }
+
     resetPhotoOptions();
     openForm();
   });
